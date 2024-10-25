@@ -20,12 +20,8 @@ pipeline {
           withCredentials([file(credentialsId:'vpn_tls_key', variable: 'VPN_TLS_KEY')]){
             sh 'cp $VPN_TLS_KEY ./GW4_ICON_AMALITECHVPN_SERVER_NathanVPNConnection-tls.key'
           }
-          withCredentials([file(credentialsId:'vpn_passphrase', variable: 'VPN_PASSPHRASE')]){
-            sh 'cp $VPN_PASSPHRASE ./vpn_passphrase.txt'
-          }
 
-          sh 'openvpn --config ./GW4_ICON_AMALITECHVPN_SERVER_NathanVPNConnection.ovpn --auth-user-pass ./vpn_credential.txt --askpass ./vpn_passphrase.txt --auth-nocache &'
-          sleep(time: 10, unit: 'SECONDS')
+          sh 'openvpn --config ./GW4_ICON_AMALITECHVPN_SERVER_NathanVPNConnection.ovpn --auth-user-pass ./vpn_credential.txt --auth-nocache &'
         }
       }
     }
