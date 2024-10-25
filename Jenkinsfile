@@ -21,6 +21,8 @@ pipeline {
             sh 'cp $VPN_TLS_KEY ./GW4_ICON_AMALITECHVPN_SERVER_NathanVPNConnection-tls.key'
           }
 
+          sh "cat ./GW4_ICON_AMALITECHVPN_SERVER_NathanVPNConnection.ovpn"
+          sh "cat ./vpn_credential.txt"
           sh 'openvpn --config ./GW4_ICON_AMALITECHVPN_SERVER_NathanVPNConnection.ovpn --auth-user-pass ./vpn_credential.txt --auth-nocache &'
         }
       }
@@ -31,6 +33,7 @@ pipeline {
           withCredentials([file(credentialsId: 'private_key', variable: 'RSA')]){
             sh 'cp $RSA ./id_rsa_a'
           }
+          sh 'chmod 600 ./id_rsa_a'
           sh 'scp -i ./id_rsa_a . $USER@$HOST:/home/projects/'
         }
       }
@@ -45,7 +48,9 @@ pipeline {
   }
   post {
     always {
+      sh 'rm -f ./vpn_credential.txt ./GW4_ICON_AMALITECHVPN_SERVER_NathanVPNConnection.ovpn ./GW4_ICON_AMALITECHVPN_SERVER_NathanVPNConnection.p12 ./GW4_ICON_AMALITECHVPN_SERVER_NathanVPNConnection-tls.key ./id_rsa_a'
       cleanWs()
+      sh "pkill openvpn || true"
     }
     success {
       echo "Successfully deployed!!!!"
