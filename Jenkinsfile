@@ -1,41 +1,39 @@
 pipeline {
   agent any
   environment {
-    AUTH = credential("vpn_credential")
-    VPN_CON = credential("openvpn_con")
     HOST = '10.182.233.21'
     USER = 'amalitech'
   }
   stages {
     stage("Connect to remote server") {
       steps {
-        step {
-          script {
-            sh """
-              echo $AUTH > vpn_credential.txt
-              echo $VPN_CON > GW4_ICON_AMALITECHVPN_SERVER_NathanVPNConnection.ovpn 
-            """
+        script {
+          withCredentials([file(credentialsId:'vpn_credential', variable: 'VPN_CREDENTIAL')]){
+            sh "cp $VPN_CREDENTIAL ./vpn_credential.txt"
           }
-        }
-        step{
-          script {
-            sh "sudo openvpn --config GW4_ICON_AMALITECHVPN_SERVER_NathanVPNConnection.ovpn --auth-user-pass vpn_credential.txt --auth-nocache &"
-            sleep(time: 10, unit: 'SECONDS')
+          withCredentials([file(credentialsId:'vpn_config', variable: 'VPN_CONFIG')]){
+            sh "cp echo $VPN_CONFIG ./GW4_ICON_AMALITECHVPN_SERVER_NathanVPNConnection.ovpn"
           }
+   
+          sh "sudo openvpn --config GW4_ICON_AMALITECHVPN_SERVER_NathanVPNConnection.ovpn --auth-user-pass vpn_credential.txt --auth-nocache &"
+          sleep(time: 10, unit: 'SECONDS')
         }
       }
     }
     stage("Move application") {
       steps {
         script {
-          sh "scp -i ~/.ssh/id_rsa_a . $USER@$HOST:/home/projects/"
+          withCredentials([file(credentialsId: 'private_key', variable: 'RSA')]){
+            sh "cp $RSA ./id_rsa_a"
+          }
+          sh "scp -i ./id_rsa_a . $USER@$HOST:/home/projects/"
         }
       }
     }
     stage("Start Application") {
       steps {
         script { 
-          sh "ssh -i ~/.ssh/id_rsa_a $USER@$HOST 'cd /home/projects/icon-test && docker compose up'"
+          sh "ssh -i ./id_rsa_a $USER@$HOST 'cd /home/projects/icon-test && docker compose up'"
         }
       }
     }
