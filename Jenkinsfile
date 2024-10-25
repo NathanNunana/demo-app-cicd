@@ -9,13 +9,13 @@ pipeline {
       steps {
         script {
           withCredentials([file(credentialsId:'vpn_credential', variable: 'VPN_CREDENTIAL')]){
-            sh "cp $VPN_CREDENTIAL ./vpn_credential.txt"
+            sh 'cp $VPN_CREDENTIAL ./vpn_credential.txt'
           }
           withCredentials([file(credentialsId:'vpn_config', variable: 'VPN_CONFIG')]){
-            sh "cp echo $VPN_CONFIG ./GW4_ICON_AMALITECHVPN_SERVER_NathanVPNConnection.ovpn"
+            sh 'cp $VPN_CONFIG ./GW4_ICON_AMALITECHVPN_SERVER_NathanVPNConnection.ovpn'
           }
    
-          sh "sudo openvpn --config GW4_ICON_AMALITECHVPN_SERVER_NathanVPNConnection.ovpn --auth-user-pass vpn_credential.txt --auth-nocache &"
+          sh 'sudo openvpn --config ./GW4_ICON_AMALITECHVPN_SERVER_NathanVPNConnection.ovpn --auth-user-pass ./vpn_credential.txt --auth-nocache &'
           sleep(time: 10, unit: 'SECONDS')
         }
       }
@@ -24,9 +24,9 @@ pipeline {
       steps {
         script {
           withCredentials([file(credentialsId: 'private_key', variable: 'RSA')]){
-            sh "cp $RSA ./id_rsa_a"
+            sh 'cp $RSA ./id_rsa_a'
           }
-          sh "scp -i ./id_rsa_a . $USER@$HOST:/home/projects/"
+          sh 'scp -i ./id_rsa_a . $USER@$HOST:/home/projects/'
         }
       }
     }
