@@ -15,7 +15,7 @@ pipeline {
             sh 'cp $VPN_CONFIG ./GW4_ICON_AMALITECHVPN_SERVER_NathanVPNConnection.ovpn'
           }
    
-          sh 'sudo openvpn --config ./GW4_ICON_AMALITECHVPN_SERVER_NathanVPNConnection.ovpn --auth-user-pass ./vpn_credential.txt --auth-nocache &'
+          sh 'openvpn --config ./GW4_ICON_AMALITECHVPN_SERVER_NathanVPNConnection.ovpn --auth-user-pass ./vpn_credential.txt --auth-nocache &'
           sleep(time: 10, unit: 'SECONDS')
         }
       }
