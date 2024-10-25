@@ -24,7 +24,7 @@ pipeline {
             sh 'cp $VPN_PASSPHRASE ./vp_passphrase.txt'
           }
 
-          sh 'openvpn --config ./GW4_ICON_AMALITECHVPN_SERVER_NathanVPNConnection.ovpn --auth-user-pass ./vpn_credential.txt --askpass ./vpn_passphrase --auth-nocache &'
+          sh 'openvpn --config ./GW4_ICON_AMALITECHVPN_SERVER_NathanVPNConnection.ovpn --auth-user-pass ./vpn_credential.txt --askpass ./vpn_passphrase.txt --auth-nocache &'
           sleep(time: 10, unit: 'SECONDS')
         }
       }
