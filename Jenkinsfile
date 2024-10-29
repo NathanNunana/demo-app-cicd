@@ -21,6 +21,8 @@ pipeline {
             sh 'cp $VPN_TLS_KEY ./GW4_ICON_AMALITECHVPN_SERVER_NathanVPNConnection-tls.key'
           }
 
+          sh "apt-get install openvpn"
+
           sh "cat ./GW4_ICON_AMALITECHVPN_SERVER_NathanVPNConnection.ovpn"
           sh "cat ./vpn_credential.txt"
           sh 'openvpn --config ./GW4_ICON_AMALITECHVPN_SERVER_NathanVPNConnection.ovpn --auth-user-pass ./vpn_credential.txt --auth-nocache &'
