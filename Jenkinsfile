@@ -1,5 +1,7 @@
 pipeline {
-  agent any
+  agent {
+    label "jenkins-node-python-agent"
+  }
   environment {
     HOST = '10.182.233.21'
     USER = 'amalitech'
